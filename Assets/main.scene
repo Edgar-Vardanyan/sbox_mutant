@@ -209,7 +209,7 @@
               "RoundEndDuration": 8,
               "State": "WaitingForPlayers",
               "StateTimeLeft": 0,
-              "WarmupDuration": 1000
+              "WarmupDuration": 2
             }
           ],
           "Children": []
@@ -868,14 +868,14 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "579ab514-ef98-4797-a511-7c0db54c251f"
+        }
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
         }
       },
       "Sandbox.MovieMaker.MovieRecorderSystem": {

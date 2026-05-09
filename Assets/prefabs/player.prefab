@@ -186,7 +186,13 @@
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
-        "OnComponentUpdate": null
+        "OnComponentUpdate": null,
+        "ViewModel": {
+          "_type": "component",
+          "component_id": "0fba6ee1-fa61-4886-b0ac-c9ed02fbaf16",
+          "go": "3d18cbeb-9bea-4ccb-a577-4957d42a25b2",
+          "component_type": "FirstPersonViewModel"
+        }
       },
       {
         "__type": "HumanWeapon",
@@ -259,6 +265,7 @@
           "component_type": "SkinnedModelRenderer"
         },
         "DebugLogs": false,
+        "HumanViewModel": "models/weapons/sbox_smg_mp5/v_mp5.vmdl",
         "HumanWeapon": {
           "_type": "component",
           "component_id": "42dbbb06-181b-4907-8eac-e563e543cae9",
@@ -266,6 +273,7 @@
           "component_type": "HumanWeapon"
         },
         "IronsightsFireScale": 0.5,
+        "MutantViewModel": "models/weapons/sbox_melee_m9bayonet/v_m9bayonet.vmdl",
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
@@ -331,6 +339,30 @@
           "go": "3d18cbeb-9bea-4ccb-a577-4957d42a25b2",
           "component_type": "PlayerRole"
         }
+      },
+      {
+        "__type": "MutantKnifeViewModel",
+        "__guid": "63ea8cf0-39f5-456e-9b6a-89f1b5d7b325",
+        "__enabled": false,
+        "Flags": 0,
+        "ArmsModel": "models/first_person/v_first_person_arms_citizen.vmdl",
+        "DebugLogs": false,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PlayerRole": {
+          "_type": "component",
+          "component_id": "463df0b6-c3c1-4d1d-ac93-5b4504c6f753",
+          "go": "3d18cbeb-9bea-4ccb-a577-4957d42a25b2",
+          "component_type": "PlayerRole"
+        },
+        "UseCitizenArms": true,
+        "ViewModel": "models/weapons/sbox_melee_m9bayonet/v_m9bayonet.vmdl",
+        "ViewModelLocalOffset": "10,0,-2",
+        "ViewModelLocalRotation": "0,0,0"
       }
     ],
     "Children": [
@@ -2493,6 +2525,7 @@
   "DontBreakAsTemplate": false,
   "__references": [
     "facepunch.v_first_person_arms_citizen#205823",
+    "facepunch.v_m9bayonet#205805",
     "facepunch.v_mp5#205811",
     "facepunch.w_mp5#145410"
   ],

@@ -3,6 +3,14 @@ using Sandbox.Rendering;
 
 public sealed class FirstPersonViewModel : Component, ICameraSetup
 {
+
+    [Property, Group("Models")]
+    public Model HumanViewModel { get; set; }
+
+    [Property, Group("Models")]
+    public Model MutantViewModel { get; set; }
+
+    private PlayerTeam _currentViewModelTeam = (PlayerTeam)(-1);
     [Property, Group("Models")]
     public Model ViewModel { get; set; }
 
@@ -92,25 +100,53 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         if (PlayerRole is null)
             PlayerRole = Components.Get<PlayerRole>();
 
-        if (HumanWeapon is null || PlayerRole is null)
+        if (PlayerRole is null)
             return;
 
-        if (_viewModelObject is null || !_viewModelObject.IsValid() || _weaponRenderer is null)
+        var desiredModel = GetModelForCurrentRole();
+
+        if (desiredModel is null)
         {
-            CreateViewModel();
+            SetViewModelVisible(false);
+            return;
+        }
+
+        if (_currentViewModelTeam != PlayerRole.Team)
+        {
+            _currentViewModelTeam = PlayerRole.Team;
+            CreateViewModel(desiredModel);
+        }
+        else if (_viewModelObject is null || !_viewModelObject.IsValid() || _weaponRenderer is null)
+        {
+            CreateViewModel(desiredModel);
         }
 
         if (_viewModelObject is null || _weaponRenderer is null)
             return;
 
-        var isHuman = PlayerRole.Team == PlayerTeam.Human;
+        var shouldShow =
+            PlayerRole.Team == PlayerTeam.Human ||
+            PlayerRole.Team == PlayerTeam.Mutant;
 
-        SetViewModelVisible(isHuman);
+        SetViewModelVisible(shouldShow);
 
-        if (!isHuman)
+        if (!shouldShow)
             return;
 
         UpdateAnimationParameters();
+    }
+
+    private Model GetModelForCurrentRole()
+    {
+        if (PlayerRole is null)
+            return null;
+
+        return PlayerRole.Team switch
+        {
+            PlayerTeam.Human => HumanViewModel,
+            PlayerTeam.Mutant => MutantViewModel,
+            _ => null
+        };
     }
 
     private void SetViewModelVisible(bool visible)
@@ -132,11 +168,11 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         }
     }
 
-    private void CreateViewModel()
+    private void CreateViewModel(Model model)
     {
         DestroyViewModel();
 
-        if (ViewModel is null)
+        if (model is null)
             return;
 
         _viewModelObject = new GameObject(true, "first_person_viewmodel");
@@ -146,7 +182,7 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         _viewModelObject.Tags.Set("viewmodel", true);
 
         _weaponRenderer = _viewModelObject.Components.Create<SkinnedModelRenderer>();
-        _weaponRenderer.Model = ViewModel;
+        _weaponRenderer.Model = model;
 
         _weaponRenderer.RenderOptions.Overlay = true;
         _weaponRenderer.RenderOptions.Game = false;
@@ -165,7 +201,7 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
 
         if (DebugLogs)
         {
-            Log.Info($"{GameObject.Name}: Created first-person viewmodel.");
+            Log.Info($"{GameObject.Name}: Created first-person viewmodel for {PlayerRole?.Team}.");
         }
     }
 
@@ -334,16 +370,25 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         if (_viewModelObject is null || _weaponRenderer is null)
             return;
 
-        var isHuman = PlayerRole is not null && PlayerRole.Team == PlayerTeam.Human;
+        if (PlayerRole is null)
+            PlayerRole = Components.Get<PlayerRole>();
 
-        _weaponRenderer.Enabled = isHuman;
-
-        if (_armsRenderer is not null)
-            _armsRenderer.Enabled = isHuman;
-
-        if (!isHuman)
+        if (PlayerRole is null)
             return;
 
+        var shouldShow =
+            PlayerRole.Team == PlayerTeam.Human ||
+            PlayerRole.Team == PlayerTeam.Mutant;
+
+        _weaponRenderer.Enabled = shouldShow;
+
+        if (_armsRenderer is not null)
+            _armsRenderer.Enabled = shouldShow;
+
+        if (!shouldShow)
+            return;
+
+        // Local first-person viewmodel only.
         if (BodyRenderer.IsValid())
         {
             _viewModelObject.Tags.Set("viewer", !BodyRenderer.Tags.Has("viewer"));
@@ -352,7 +397,10 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         {
             _viewModelObject.Tags.Set("viewer", true);
         }
-        var aiming = Input.Down("attack2");
+
+        _viewModelObject.Tags.Set("viewmodel", true);
+
+        var aiming = Input.Down("attack2") && PlayerRole.Team == PlayerTeam.Human;
 
         _aimOffsetAmount = _aimOffsetAmount.LerpTo(aiming ? 1f : 0f, Time.Delta * AimOffsetLerpSpeed);
 
@@ -365,12 +413,47 @@ public sealed class FirstPersonViewModel : Component, ICameraSetup
         _viewModelObject.LocalRotation *= finalRotation.ToRotation();
         _viewModelObject.LocalPosition += _viewModelObject.WorldRotation * finalOffset;
 
-        var cameraBone = _weaponRenderer.GetBoneObject("camera");
-
-        if (cameraBone is not null)
+        // Use camera bone only for Human MP5.
+        // Knife/bayonet viewmodels may not align correctly with this.
+        if (PlayerRole.Team == PlayerTeam.Human)
         {
-            camera.LocalPosition += cameraBone.LocalPosition;
-            camera.LocalRotation *= cameraBone.LocalRotation;
+            var cameraBone = _weaponRenderer.GetBoneObject("camera");
+
+            if (cameraBone is not null)
+            {
+                camera.LocalPosition += cameraBone.LocalPosition;
+                camera.LocalRotation *= cameraBone.LocalRotation;
+            }
         }
+    }
+
+    public void TriggerMeleeAttack()
+    {
+        PlayMeleeAttackOwner();
+    }
+
+    public void TriggerMeleeHit()
+    {
+        PlayMeleeHitOwner();
+    }
+
+    [Rpc.Owner]
+    private void PlayMeleeAttackOwner()
+    {
+        if (_weaponRenderer is null)
+            return;
+
+        _weaponRenderer.Set("b_attack", true);
+    }
+
+    [Rpc.Owner]
+    private void PlayMeleeHitOwner()
+    {
+        if (_weaponRenderer is null)
+            return;
+
+        // If the knife animgraph has this param, it may play hit reaction.
+        // If not, harmless.
+        _weaponRenderer.Set("b_attack_hit", true);
     }
 }

@@ -9,6 +9,9 @@ public sealed class MutantAttack : Component
 	public float AttackCooldown { get; set; } = 1f;
 
 	[Property]
+	public FirstPersonViewModel ViewModel { get; set; }
+
+	[Property]
 	public bool DebugLogs { get; set; } = true;
 
 	private TimeUntil _nextAttackTime;
@@ -16,6 +19,7 @@ public sealed class MutantAttack : Component
 	protected override void OnStart()
 	{
 		_nextAttackTime = 0f;
+		ViewModel ??= Components.Get<FirstPersonViewModel>();
 
 		if ( DebugLogs )
 		{
@@ -25,9 +29,6 @@ public sealed class MutantAttack : Component
 
 	protected override void OnUpdate()
 	{
-		// Very important:
-		// Only the owner of this player object should read input.
-		// Proxy copies of other players should not read your keyboard/mouse.
 		if ( IsProxy )
 			return;
 
@@ -42,12 +43,15 @@ public sealed class MutantAttack : Component
 		if ( !_nextAttackTime )
 			return;
 
-		if ( Input.Pressed( "Attack1" ) )
+		if ( Input.Pressed( "attack1" ) )
 		{
+			ViewModel?.TriggerMeleeAttack();
+
 			var start = GetAttackStartPosition();
 			var direction = GetAttackDirection();
 
 			RequestMutantAttack( start, direction );
+
 			_nextAttackTime = AttackCooldown;
 		}
 	}
@@ -92,6 +96,8 @@ public sealed class MutantAttack : Component
 			return;
 
 		targetRole.SetTeam( PlayerTeam.Mutant );
+
+		ViewModel?.TriggerMeleeHit();
 
 		if ( DebugLogs )
 		{
