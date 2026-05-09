@@ -295,6 +295,42 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null
+      },
+      {
+        "__type": "CitizenWeaponPoseController",
+        "__guid": "37f61772-9eea-4be2-a394-eb631795c061",
+        "__enabled": true,
+        "Flags": 0,
+        "AnimationHelper": {
+          "_type": "component",
+          "component_id": "992cc9cb-fef0-4beb-a1b9-aa76b2bb65e2",
+          "go": "5aaaf7b2-1f98-4072-a230-06af09492831",
+          "component_type": "CitizenAnimationHelper"
+        },
+        "BodyRenderer": {
+          "_type": "component",
+          "component_id": "bc129ce9-ee40-41a6-b7e4-16161dadbdaa",
+          "go": "5aaaf7b2-1f98-4072-a230-06af09492831",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "DebugLogs": true,
+        "EyeSource": {
+          "_type": "gameobject",
+          "go": "d6ef05a7-82ea-4773-b7f8-b708f7dd6d7f"
+        },
+        "HumanHoldType": "Rifle",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "PlayerRole": {
+          "_type": "component",
+          "component_id": "463df0b6-c3c1-4d1d-ac93-5b4504c6f753",
+          "go": "3d18cbeb-9bea-4ccb-a577-4957d42a25b2",
+          "component_type": "PlayerRole"
+        }
       }
     ],
     "Children": [
@@ -480,6 +516,38 @@
             },
             "Tint": "1,1,1,1",
             "UseAnimGraph": true
+          },
+          {
+            "__type": "Sandbox.Citizen.CitizenAnimationHelper",
+            "__guid": "992cc9cb-fef0-4beb-a1b9-aa76b2bb65e2",
+            "__enabled": true,
+            "Flags": 0,
+            "BodyWeight": 1,
+            "EyeSource": {
+              "_type": "gameobject",
+              "go": "d6ef05a7-82ea-4773-b7f8-b708f7dd6d7f"
+            },
+            "EyesWeight": 1,
+            "HeadWeight": 1,
+            "Height": 1,
+            "IkLeftFoot": null,
+            "IkLeftHand": null,
+            "IkRightFoot": null,
+            "IkRightHand": null,
+            "LookAt": null,
+            "LookAtEnabled": false,
+            "OnComponentDestroy": null,
+            "OnComponentDisabled": null,
+            "OnComponentEnabled": null,
+            "OnComponentFixedUpdate": null,
+            "OnComponentStart": null,
+            "OnComponentUpdate": null,
+            "Target": {
+              "_type": "component",
+              "component_id": "bc129ce9-ee40-41a6-b7e4-16161dadbdaa",
+              "go": "5aaaf7b2-1f98-4072-a230-06af09492831",
+              "component_type": "SkinnedModelRenderer"
+            }
           }
         ],
         "Children": [
@@ -2279,6 +2347,7 @@
             "__guid": "a06af275-2f50-4e75-ba35-b771ef0dce50",
             "__enabled": true,
             "Flags": 0,
+            "AttachBoneName": "hold_R",
             "BodyRenderer": {
               "_type": "component",
               "component_id": "bc129ce9-ee40-41a6-b7e4-16161dadbdaa",
@@ -2286,8 +2355,9 @@
               "component_type": "SkinnedModelRenderer"
             },
             "DebugLogs": false,
-            "HandBoneName": "hand_R_IK_target",
             "HideForLocalPlayer": true,
+            "LocalPositionOffset": "4,0,-6",
+            "LocalRotationOffset": "-10,0,0",
             "OnComponentDestroy": null,
             "OnComponentDisabled": null,
             "OnComponentEnabled": null,
@@ -2300,8 +2370,6 @@
               "go": "3d18cbeb-9bea-4ccb-a577-4957d42a25b2",
               "component_type": "PlayerRole"
             },
-            "PositionOffset": "8,0,0",
-            "RotationOffset": "0,90,0",
             "WeaponRenderer": {
               "_type": "component",
               "component_id": "3a8c8d2e-d55b-4d6f-8371-b1a0fea633c9",
@@ -2355,6 +2423,42 @@
                 "Tint": "1,1,1,1"
               }
             ],
+            "Children": []
+          },
+          {
+            "__guid": "a27a81d4-1550-4b23-9112-28d0a72d53ad",
+            "__version": 2,
+            "Flags": 0,
+            "Name": "LeftHandGrip",
+            "Position": "0,0,0",
+            "Rotation": "0,0,0,1",
+            "Scale": "1,1,1",
+            "Tags": "",
+            "Enabled": true,
+            "NetworkMode": 2,
+            "NetworkFlags": 0,
+            "NetworkOrphaned": 0,
+            "NetworkTransmit": true,
+            "OwnerTransfer": 1,
+            "Components": [],
+            "Children": []
+          },
+          {
+            "__guid": "05101fe8-8994-4f77-9893-0de70a9bce97",
+            "__version": 2,
+            "Flags": 0,
+            "Name": "RightHandGrip",
+            "Position": "0,0,0",
+            "Rotation": "0,0,0,1",
+            "Scale": "1,1,1",
+            "Tags": "",
+            "Enabled": true,
+            "NetworkMode": 2,
+            "NetworkFlags": 0,
+            "NetworkOrphaned": 0,
+            "NetworkTransmit": true,
+            "OwnerTransfer": 1,
+            "Components": [],
             "Children": []
           }
         ]
